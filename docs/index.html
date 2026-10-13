@@ -1,0 +1,93 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Vote Button Generator</title>
+<meta name="description" content="Free vote button and status banner snippets (HTML, Markdown, BBCode) for Minecraft servers, plus a Votifier test script and a MOTD color code cheat sheet.">
+<link rel="canonical" href="https://nickynice1.github.io/bestmcserverlist/">
+<style>
+:root { --bg:#f6f7f9; --fg:#16181d; --muted:#5a606b; --card:#fff; --line:#dde1e7; --accent:#2f7d32; --code:#eef1f4; }
+@media (prefers-color-scheme: dark) { :root { --bg:#111317; --fg:#e8eaee; --muted:#9aa1ad; --card:#1a1d23; --line:#2b3039; --accent:#6bcf6f; --code:#22262e; } }
+* { box-sizing:border-box; }
+body { margin:0; background:var(--bg); color:var(--fg); font:16px/1.55 system-ui, -apple-system, "Segoe UI", sans-serif; }
+main { max-width:760px; margin:0 auto; padding:32px 16px 48px; }
+h1 { font-size:1.7rem; margin:0 0 6px; }
+h2 { font-size:1.15rem; margin:32px 0 10px; }
+p, li { color:var(--muted); }
+a { color:var(--accent); }
+.card { background:var(--card); border:1px solid var(--line); border-radius:10px; padding:16px; }
+label { display:block; font-weight:600; margin:0 0 6px; }
+input, select { width:100%; padding:9px 10px; border:1px solid var(--line); border-radius:8px; background:var(--bg); color:var(--fg); font:inherit; }
+.row { display:grid; grid-template-columns:2fr 1fr; gap:12px; }
+@media (max-width:520px) { .row { grid-template-columns:1fr; } }
+textarea { width:100%; min-height:86px; margin-top:6px; padding:9px 10px; border:1px solid var(--line); border-radius:8px; background:var(--code); color:var(--fg); font:13px/1.45 ui-monospace, Consolas, monospace; resize:vertical; }
+.out { margin-top:16px; }
+.preview { margin-top:14px; min-height:54px; }
+footer { margin-top:40px; font-size:.9rem; color:var(--muted); }
+</style>
+</head>
+<body>
+<main>
+<h1>Vote button &amp; banner snippets</h1>
+<p>Free helpers for Minecraft server owners from the team behind <a href="https://bestmcserverlist.net">BestMCServerList</a>. Source and more tools: <a href="https://github.com/nickynice1/bestmcserverlist">github.com/nickynice1/bestmcserverlist</a>.</p>
+
+<div class="card">
+  <div class="row">
+    <div>
+      <label for="slug">Your server slug</label>
+      <input id="slug" placeholder="e.g. planetsmp-com" value="planetsmp-com" autocomplete="off">
+    </div>
+    <div>
+      <label for="kind">Image</label>
+      <select id="kind">
+        <option value="88x31">Vote button 88×31</option>
+        <option value="200x50">Vote button 200×50</option>
+        <option value="widget">Live banner 468×96</option>
+      </select>
+    </div>
+  </div>
+  <p style="margin:8px 0 0;font-size:.9rem">The slug is the part after <code>/server/</code> in your server's URL on bestmcserverlist.net.</p>
+  <div class="preview" id="preview"></div>
+  <div class="out"><label for="html">HTML</label><textarea id="html" readonly></textarea></div>
+  <div class="out"><label for="md">Markdown</label><textarea id="md" readonly></textarea></div>
+  <div class="out"><label for="bb">BBCode</label><textarea id="bb" readonly></textarea></div>
+</div>
+
+<h2>More free helpers</h2>
+<ul>
+  <li><a href="https://github.com/nickynice1/bestmcserverlist/tree/main/votifier-tester">Votifier / NuVotifier test vote script</a> (Python, no dependencies, v1 and v2)</li>
+  <li><a href="https://github.com/nickynice1/bestmcserverlist/blob/main/motd/MOTD-CHEATSHEET.md">MOTD color &amp; format code cheat sheet</a> (Java and Bedrock, MiniMessage)</li>
+  <li>Browser tools: <a href="https://bestmcserverlist.net/tools/motd">MOTD designer</a>, <a href="https://bestmcserverlist.net/tools/server-icon">server icon maker</a>, <a href="https://bestmcserverlist.net/banner-studio">Banner Studio</a>, <a href="https://bestmcserverlist.net/tools/gui">DeluxeMenus GUI designer</a>, <a href="https://bestmcserverlist.net/tools/ranks">rank prefix designer</a></li>
+  <li><a href="https://bestmcserverlist.net/add-your-server">Add your server to BestMCServerList</a> (free)</li>
+</ul>
+
+<footer>Published by the operators of BestMCServerList. MIT licensed. Contact: kontakt@bestmcserverlist.net</footer>
+</main>
+<script>
+(function () {
+  var base = 'https://bestmcserverlist.net';
+  var slugEl = document.getElementById('slug'), kindEl = document.getElementById('kind');
+  function clean(s) { return (s || '').toLowerCase().trim().replace(/^.*\/server\//, '').replace(/[^a-z0-9-]/g, ''); }
+  function render() {
+    var slug = clean(slugEl.value) || 'YOUR-SLUG', kind = kindEl.value;
+    var page = base + '/server/' + slug, img, w, h, alt;
+    if (kind === 'widget') { img = base + '/widget/' + slug + '.png'; w = 468; h = 96; alt = 'Our server on BestMCServerList'; }
+    else { img = base + '/badges/vote-' + kind + '.png'; w = +kind.split('x')[0]; h = +kind.split('x')[1]; alt = 'Vote for our server on BestMCServerList'; }
+    var srcset = kind === 'widget' ? '' : ' srcset="' + img.replace('.png', '@2x.png') + ' 2x"';
+    var html = '<a href="' + page + '" target="_blank" rel="noopener"><img src="' + img + '"' + srcset + ' width="' + w + '" height="' + h + '" alt="' + alt + '"></a>';
+    document.getElementById('html').value = html;
+    document.getElementById('md').value = '[![' + alt + '](' + img + ')](' + page + ')';
+    document.getElementById('bb').value = '[url=' + page + '][img]' + img + '[/img][/url]';
+    var pv = document.getElementById('preview'); pv.innerHTML = '';
+    var a = document.createElement('a'); a.href = page; a.target = '_blank'; a.rel = 'noopener';
+    var i = document.createElement('img'); i.src = img; i.width = w; i.height = h; i.alt = alt; i.style.maxWidth = '100%'; i.style.height = 'auto';
+    a.appendChild(i); pv.appendChild(a);
+  }
+  slugEl.addEventListener('input', render); kindEl.addEventListener('change', render);
+  document.querySelectorAll('textarea').forEach(function (t) { t.addEventListener('focus', function () { t.select(); }); });
+  render();
+})();
+</script>
+</body>
+</html>
